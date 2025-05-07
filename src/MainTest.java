@@ -4,11 +4,10 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Locale;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 
-public class ImageCompressorAppTest {
+public class MainTest {
 
 
     @Test
@@ -24,7 +23,7 @@ public class ImageCompressorAppTest {
         outputDir.mkdirs();
 
         // Erstelle eine Instanz der ImageCompressorApp (für indirekten Test der Komprimierung)
-        ImageCompressorApp compressor = new ImageCompressorApp();
+        Main compressor = new Main();
 
         // Setze Eingabedateien und Ausgabeverzeichnis (normalerweise über die GUI)
         compressor.inputFiles = Arrays.asList(inputFile); // Direktes Setzen für den Test
@@ -54,7 +53,7 @@ public class ImageCompressorAppTest {
 
     @Test
     public void testChooseInputFiles(){
-        ImageCompressorApp compressor = new ImageCompressorApp();
+        Main compressor = new Main();
         //Simuliere Auswahl von Dateien.  Da die UI-Interaktion schwer zu testen ist,
         //wird hier ein Mock verwendet, um das Verhalten zu emulieren.
         final File tempFile1 = new File("test1.jpg");
@@ -69,7 +68,7 @@ public class ImageCompressorAppTest {
 
     @Test
     public void testChooseOutputDirectory() throws IOException {
-        ImageCompressorApp compressor = new ImageCompressorApp();
+        Main compressor = new Main();
 
         // Simuliere die Auswahl eines Ausgabeverzeichnisses.
         File tempDir = File.createTempFile("test_dir", "");

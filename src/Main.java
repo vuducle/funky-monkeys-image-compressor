@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class ImageCompressorApp extends JFrame {
+public class Main extends JFrame {
 
     private JLabel inputLabel, outputLabel, statusLabel, qualityLabel, widthLabel;
     JTextField inputTextField;
@@ -27,7 +27,7 @@ public class ImageCompressorApp extends JFrame {
     private int maxWidth = 1200;
     List<File> inputFiles;
 
-    public ImageCompressorApp() {
+    public Main() {
         setTitle("Funky Monkeys Image Compressor");
         setSize(600, 400);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -307,7 +307,7 @@ public class ImageCompressorApp extends JFrame {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                new ImageCompressorApp();
+                new Main();
             }
         });
     }

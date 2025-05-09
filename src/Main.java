@@ -1,3 +1,5 @@
+import l18n.Translations;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -26,9 +28,16 @@ public class Main extends JFrame {
     private JSlider qualitySlider;
     private int maxWidth = 1200;
     List<File> inputFiles;
+    private String languages;
 
     public Main() {
-        setTitle("Funky Monkeys Image Compressor");
+        // Detect system language
+        languages = System.getProperty("user.language");
+        if (!Arrays.asList("de", "en", "vn").contains(languages)) {
+            languages = "en";
+        }
+
+        setTitle(Translations.getLanguage(languages, "title"));
         setSize(600, 400);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
@@ -37,18 +46,18 @@ public class Main extends JFrame {
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(5, 5, 5, 5);
 
-        inputLabel = new JLabel("Eingabebilder:");
-        outputLabel = new JLabel("Ausgabeordner:");
-        statusLabel = new JLabel("Status:");
-        qualityLabel = new JLabel("Qualität:");
-        widthLabel = new JLabel("Breite:");
+        inputLabel = new JLabel(Translations.getLanguage(languages, "inputLabel"));
+        outputLabel = new JLabel(Translations.getLanguage(languages, "outputLabel"));
+        statusLabel = new JLabel(Translations.getLanguage(languages, "statusLabel"));
+        qualityLabel = new JLabel(Translations.getLanguage(languages, "qualityLabel"));
+        widthLabel = new JLabel(Translations.getLanguage(languages, "widthLabel"));
         inputTextField = new JTextField(30);
         outputTextField = new JTextField(30);
         widthTextField = new JTextField(10);
         widthTextField.setText(String.valueOf(maxWidth));
-        inputButton = new JButton("Durchsuchen...");
-        outputButton = new JButton("Durchsuchen...");
-        compressButton = new JButton("Komprimieren");
+        inputButton = new JButton(Translations.getLanguage(languages, "inputButton"));
+        outputButton = new JButton(Translations.getLanguage(languages, "outputButton"));
+        compressButton = new JButton(Translations.getLanguage(languages, "compressButton"));
         progressBar = new JProgressBar(0, 100);
         progressBar.setStringPainted(true);
         qualitySlider = new JSlider(JSlider.HORIZONTAL, 0, 100, 75);
@@ -155,7 +164,7 @@ public class Main extends JFrame {
         if (System.getProperty("os.name").toLowerCase().contains("mac")) {
             // Verwende NSOpenPanel für macOS
             System.setProperty("apple.awt.fileDialog.useSystemExtensionAppearance", "true");
-            FileDialog fileDialog = new FileDialog(this, "Eingabebilder auswählen", FileDialog.LOAD);
+            FileDialog fileDialog = new FileDialog(this, Translations.getLanguage(languages,"chooseInputTitle"), FileDialog.LOAD);
             fileDialog.setMultipleMode(true);
             fileDialog.setVisible(true);
 
@@ -179,7 +188,7 @@ public class Main extends JFrame {
         } else {
             // Use JFileChooser für other OS
             JFileChooser fileChooser = new JFileChooser();
-            fileChooser.setFileFilter(new FileNameExtensionFilter("Bilddateien", "jpg", "jpeg", "png", "gif"));
+            fileChooser.setFileFilter(new FileNameExtensionFilter("File images", "jpg", "jpeg", "png", "gif"));
             fileChooser.setMultiSelectionEnabled(true);
             int result = fileChooser.showOpenDialog(this);
             if (result == JFileChooser.APPROVE_OPTION) {
@@ -201,7 +210,7 @@ public class Main extends JFrame {
         if (System.getProperty("os.name").toLowerCase().contains("mac")) {
             // Use NSOpenPanel for macOS in Directory-Mode
             System.setProperty("apple.awt.fileDialog.useSystemExtensionAppearance", "true");
-            FileDialog fileDialog = new FileDialog(this, "Ausgabeordner wählen", FileDialog.SAVE);
+            FileDialog fileDialog = new FileDialog(this, Translations.getLanguage(languages, "chooseOutputTitle"), FileDialog.SAVE);
             fileDialog.setMode(FileDialog.SAVE);
             fileDialog.setVisible(true);
 
@@ -224,14 +233,14 @@ public class Main extends JFrame {
 
     void compressImages() {
         if (inputFiles == null || inputFiles.isEmpty() || outputTextField.getText().isEmpty()) {
-            statusLabel.setText("Bitte wählen Sie Eingabebilder und einen Ausgabeordner.");
+            statusLabel.setText(Translations.getLanguage(languages, "noInputOutput"));
             return;
         }
 
         File outputDirectory = new File(outputTextField.getText());
         if (!outputDirectory.exists()) {
             if (!outputDirectory.mkdirs()) {
-                statusLabel.setText("Ausgabeordner konnte nicht erstellt werden.");
+                statusLabel.setText(Translations.getLanguage(languages, "outputDirError"));
                 return;
             }
         }
@@ -239,12 +248,12 @@ public class Main extends JFrame {
         try {
             maxWidth = Integer.parseInt(widthTextField.getText());
         } catch (NumberFormatException e) {
-            statusLabel.setText("Ungültige Breite eingegeben. Bitte eine Zahl eingeben.");
+            statusLabel.setText(Translations.getLanguage(languages, "invalidWidth"));
             return;
         }
 
 
-        statusLabel.setText("Komprimierung läuft...");
+        statusLabel.setText(Translations.getLanguage(languages, "compressionRunning"));
         progressBar.setValue(0);
         progressBar.setMaximum(inputFiles.size());
         AtomicInteger processedCount = new AtomicInteger(0);
@@ -282,9 +291,9 @@ public class Main extends JFrame {
                         SwingUtilities.invokeLater(new Runnable() {
                             public void run() {
                                 progressBar.setValue(currentCount);
-                                statusLabel.setText("Verarbeitet: " + currentCount + " von " + inputFiles.size());
+                                statusLabel.setText("From: " + currentCount + " to " + inputFiles.size());
                                 if (currentCount == inputFiles.size()) {
-                                    statusLabel.setText("Komprimierung abgeschlossen.");
+                                    statusLabel.setText(Translations.getLanguage(languages, "compressionFinished"));
                                 }
                             }
                         });
@@ -292,7 +301,7 @@ public class Main extends JFrame {
                     } catch (IOException ex) {
                         SwingUtilities.invokeLater(new Runnable() {
                             public void run() {
-                                statusLabel.setText("Fehler beim Komprimieren eines Bildes: " + ex.getMessage());
+                                statusLabel.setText(Translations.getLanguage(languages, "fileError") + ex.getMessage());
                                 progressBar.setValue(0);
                             }
                         });

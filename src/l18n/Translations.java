@@ -79,7 +79,7 @@ public class Translations {
     public static String getLanguage(String lang, String key) {
         Map<String, String> langMap = translations.get(lang);
         if (langMap != null && langMap.containsKey(key)) {
-            return langMap.getOrDefault(key, key);
+            return langMap.get( key );
         }
 
         return translations.get("en").get(key); // Fallback to the key if the language is not found
